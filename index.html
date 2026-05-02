@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#080810">
+  <title>BBB — MAG</title>
+
+  <!-- Fontes -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- Ícones -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <!-- Estilos -->
+  <link rel="stylesheet" href="style.css">
+  <!-- Upload widget Cloudinary -->
+  <script src="https://upload-widget.cloudinary.com/global/all.js"></script>
+</head>
+<body>
+
+<div class="amb amb-a"></div>
+<div class="amb amb-b"></div>
+
+<div class="shell">
+
+  <!-- ── SIDEBAR ───────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-eye">Ministério</div>
+      <div class="brand-title">BBB <em>&</em> MAG</div>
+    </div>
+
+    <span class="nav-lbl">Principal</span>
+    <button class="nav-item active" onclick="nav(this,'dashboard')">
+      <i class='bx bxs-dashboard'></i>Dashboard
+    </button>
+    <button class="nav-item" onclick="nav(this,'escalas')">
+      <i class='bx bxs-calendar-event'></i>Escalas
+    </button>
+    <button class="nav-item" onclick="nav(this,'repertorio')">
+      <i class='bx bxs-music'></i>Repertório
+    </button>
+
+    <span class="nav-lbl" style="margin-top:14px">Ferramentas</span>
+    <button class="nav-item" onclick="nav(this,'mixer')">
+      <i class='bx bxs-slider-alt'></i>Mixer VS
+    </button>
+    <button class="nav-item" onclick="nav(this,'membros')">
+      <i class='bx bxs-user-detail'></i>Membros
+    </button>
+    <button class="nav-item" onclick="nav(this,'avisos')">
+      <i class='bx bxs-bell'></i>Avisos
+    </button>
+
+    <div class="user-card" onclick="abrirUpload()" title="Alterar foto">
+      <img src="https://github.com/omarquesz.png" class="user-pfp" id="user-pfp" alt="Perfil">
+      <div class="user-meta">
+        <strong>Lucas Marques</strong>
+        <span>Admin · ADS</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── CONTEÚDO ──────────────────────────────────── -->
+  <main class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="ph">
+        <div class="ph-over">Visão geral</div>
+        <div class="ph-title">Bem-vindo, <em>Lucas</em></div>
+        <div class="ph-sub">Sábado, 2 de Maio · 2026</div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-tile"><div class="stat-n">7</div><div class="stat-l">Membros</div></div>
+        <div class="stat-tile"><div class="stat-n" id="rep-count">—</div><div class="stat-l">Músicas</div></div>
+        <div class="stat-tile"><div class="stat-n">3</div><div class="stat-l">Escalas</div></div>
+      </div>
+      <span class="slabel">Próximo evento</span>
+      <div class="next-card">
+        <div class="next-over">Dom, 04 Mai · 9h — MAG Acamp 2026</div>
+        <div class="next-title">Culto da Manhã — BBB</div>
+        <div id="dash-songs"></div>
+      </div>
+      <div class="rule"></div>
+      <span class="slabel">Último aviso</span>
+      <div class="av-card hi">
+        <div class="av-stamp">01 Mai · Admin</div>
+        <div class="av-title">Ensaio geral — Sexta 19h</div>
+        <div class="av-body">Presença obrigatória para todos os escalados do domingo. Revisaremos o VS da Boa Parte.</div>
+      </div>
+    </div>
+
+    <!-- ESCALAS -->
+    <div class="page" id="page-escalas">
+      <div class="ph">
+        <div class="ph-over">Maio 2026</div>
+        <div class="ph-title">Escalas</div>
+      </div>
+      <div class="esc-card">
+        <div class="esc-top"><div class="esc-name">Culto da Manhã</div><div class="esc-badge">Dom, 04 Mai</div></div>
+        <div class="chips">
+          <div class="chip"><div class="chip-av" style="background:#3b2e6e;color:#a89de8">AL</div>Ana Lima<span class="chip-role"> · Vocal</span></div>
+          <div class="chip"><div class="chip-av" style="background:#1e3a2a;color:#6dbf97">MC</div>Marcos C<span class="chip-role"> · Guitarra</span></div>
+          <div class="chip"><div class="chip-av" style="background:#2a1e3a;color:#b898e8">JR</div>João R<span class="chip-role"> · Teclado</span></div>
+          <div class="chip"><div class="chip-av" style="background:#3a2010;color:#e8a06a">LM</div>Lucas M<span class="chip-role"> · Violão</span></div>
+          <div class="chip"><div class="chip-av" style="background:#1e2e3a;color:#6ab0e8">PS</div>Paula S<span class="chip-role"> · Bateria</span></div>
+        </div>
+      </div>
+      <div class="esc-card">
+        <div class="esc-top"><div class="esc-name">Culto da Noite</div><div class="esc-badge">Dom, 04 Mai</div></div>
+        <div class="chips">
+          <div class="chip"><div class="chip-av" style="background:#1e2e3a;color:#6ab0e8">RM</div>Rafael M<span class="chip-role"> · Vocal</span></div>
+          <div class="chip"><div class="chip-av" style="background:#3a1e1e;color:#e86a6a">LF</div>Luana F<span class="chip-role"> · Baixo</span></div>
+          <div class="chip"><div class="chip-av" style="background:#1e3a2a;color:#6dbf97">DG</div>Diego G<span class="chip-role"> · Guitarra</span></div>
+        </div>
+      </div>
+      <div class="esc-card">
+        <div class="esc-top"><div class="esc-name">EBD — Célula</div><div class="esc-badge">Qua, 07 Mai</div></div>
+        <div class="chips">
+          <div class="chip"><div class="chip-av" style="background:#3b2e6e;color:#a89de8">AL</div>Ana Lima<span class="chip-role"> · Vocal</span></div>
+          <div class="chip"><div class="chip-av" style="background:#3a2010;color:#e8a06a">LM</div>Lucas M<span class="chip-role"> · Violão</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPERTÓRIO -->
+    <div class="page" id="page-repertorio">
+      <div class="ph">
+        <div class="ph-over">BBB — Banda Boa e Bonita</div>
+        <div class="ph-title">Repertório</div>
+      </div>
+      <div class="search-box">
+        <i class='bx bx-search' style="color:var(--dim);font-size:16px"></i>
+        <input id="search-input" type="text" placeholder="Buscar música ou artista…" oninput="filterRep(this.value)">
+      </div>
+      <div id="rep-list"></div>
+    </div>
+
+    <!-- MIXER VS -->
+    <div class="page" id="page-mixer">
+      <div id="mixer-view"></div>
+    </div>
+
+    <!-- MEMBROS -->
+    <div class="page" id="page-membros">
+      <div class="ph">
+        <div class="ph-over">Time BBB</div>
+        <div class="ph-title">Membros</div>
+      </div>
+      <div class="mem-grid" id="membros-grid"></div>
+      <span class="slabel">Frequência — Maio</span>
+      <div style="background:var(--surf);border:1px solid var(--rim);border-radius:14px;overflow:hidden" id="freq-list"></div>
+    </div>
+
+    <!-- AVISOS -->
+    <div class="page" id="page-avisos">
+      <div class="ph">
+        <div class="ph-over">Comunicados</div>
+        <div class="ph-title">Avisos</div>
+      </div>
+      <div class="av-card hi">
+        <div class="av-stamp">01 Mai · Admin</div>
+        <div class="av-title">Ensaio geral esta sexta</div>
+        <div class="av-body">Ensaio confirmado na sexta às 19h. Presença obrigatória para todos os escalados no domingo.</div>
+      </div>
+      <div class="av-card">
+        <div class="av-stamp">28 Abr · Admin</div>
+        <div class="av-title">Novo áudio no VS — Boa Parte</div>
+        <div class="av-body">O track de baixo e bateria estão disponíveis no Mixer VS. Treinem antes do ensaio.</div>
+      </div>
+      <div class="av-card">
+        <div class="av-stamp">25 Abr · Admin</div>
+        <div class="av-title">Escala de Maio publicada</div>
+        <div class="av-body">Verifiquem a escala e confirmem a disponibilidade para todos os domingos do mês.</div>
+      </div>
+      <div class="av-card">
+        <div class="av-stamp">20 Abr · Admin</div>
+        <div class="av-title">MAG Acamp 2026 confirmado!</div>
+        <div class="av-body">Datas e repertório do acampamento serão definidos em reunião esta semana. Aguardem confirmação.</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── BOTTOM NAV (mobile) ───────────────────────────────── -->
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="bn-item active" onclick="navMobile(this,'dashboard')">
+    <i class='bx bxs-dashboard'></i>Dashboard
+  </button>
+  <button class="bn-item" onclick="navMobile(this,'escalas')">
+    <i class='bx bxs-calendar-event'></i>Escalas
+  </button>
+  <button class="bn-item" onclick="navMobile(this,'repertorio')">
+    <i class='bx bxs-music'></i>Repért.
+  </button>
+  <button class="bn-item" onclick="navMobile(this,'mixer')">
+    <i class='bx bxs-slider-alt'></i>Mixer
+  </button>
+  <button class="bn-item" onclick="navMobile(this,'membros')">
+    <i class='bx bxs-user-detail'></i>Membros
+  </button>
+</nav>
+<script src="data.js"></script>
+<script src="audio.js"></script>
+<script src="ui.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
