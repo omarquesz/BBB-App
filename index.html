@@ -47,6 +47,9 @@
     <button class="nav-item" onclick="nav(this,'mixer')">
       <i class='bx bxs-slider-alt'></i>Mixer VS
     </button>
+    <button class="nav-item" onclick="nav(this,'disponibilidade')">
+      <i class='bx bxs-calendar-check'></i>Disponibilidade
+    </button>
     <button class="nav-item" onclick="nav(this,'membros')">
       <i class='bx bxs-user-detail'></i>Membros
     </button>
@@ -106,7 +109,7 @@
           <div class="chip"><div class="chip-av" style="background:#1e3a2a;color:#6dbf97">MC</div>Marcos C<span class="chip-role"> · Guitarra</span></div>
           <div class="chip"><div class="chip-av" style="background:#2a1e3a;color:#b898e8">JR</div>João R<span class="chip-role"> · Teclado</span></div>
           <div class="chip"><div class="chip-av" style="background:#3a2010;color:#e8a06a">LM</div>Lucas M<span class="chip-role"> · Violão</span></div>
-          <div class="chip"><div class="chip-av" style="background:#1e2e3a;color:#6ab0e8">PS</div>Paula S<span class="chip-role"> · Bateria</span></div>
+          <div class="chip"><div class="chip-av" style="background:#1e2838;color:#6aaee8">PS</div>Paula S<span class="chip-role"> · Bateria</span></div>
         </div>
       </div>
       <div class="esc-card">
@@ -142,6 +145,16 @@
     <!-- MIXER VS -->
     <div class="page" id="page-mixer">
       <div id="mixer-view"></div>
+    </div>
+
+    <!-- DISPONIBILIDADE -->
+    <div class="page" id="page-disponibilidade">
+      <div class="ph">
+        <div class="ph-over">Maio 2026</div>
+        <div class="ph-title">Disponibilidade</div>
+        <div class="ph-sub">Confirme sua presença nas datas com eventos.</div>
+      </div>
+      <div id="disp-root"></div>
     </div>
 
     <!-- MEMBROS -->
@@ -200,13 +213,14 @@
   <button class="bn-item" onclick="navMobile(this,'mixer')">
     <i class='bx bxs-slider-alt'></i>Mixer
   </button>
-  <button class="bn-item" onclick="navMobile(this,'membros')">
-    <i class='bx bxs-user-detail'></i>Membros
+  <button class="bn-item" onclick="navMobile(this,'disponibilidade')">
+    <i class='bx bxs-calendar-check'></i>Dispon.
   </button>
 </nav>
 <script src="data.js"></script>
 <script src="audio.js"></script>
 <script src="ui.js"></script>
+<script src="disponibilidade.js"></script>
 <script src="app.js"></script>
 
 </body>
