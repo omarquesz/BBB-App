@@ -137,42 +137,68 @@ function renderTrackStates() {
     }
     const vol  = row.querySelector('.t-vol');
     const mute = row.querySelector('.mute-btn');
-    // controles só ficam ativos quando decodificado
     const active = trackStates[k] === 'ready' && !!decodedBuffers[k];
     if (vol)  vol.disabled  = !active;
     if (mute) mute.disabled = !active;
   });
+  updateCircLoader();
   updateLoadingBanner();
 }
 
-// ─── Banner de status ─────────────────────────────────────
-function updateLoadingBanner() {
-  const el = document.getElementById('loading-status');
-  if (!el) return;
+// ─── Loader circular ─────────────────────────────────────
+function updateCircLoader() {
+  const loader    = document.getElementById('circ-loader');
+  const arc       = document.getElementById('circ-arc');
+  const labelEl   = document.getElementById('circ-label');
+  const trackEl   = document.getElementById('circ-track');
+  const seekPanel = document.getElementById('seek-panel');
+  const tracksWrap = document.getElementById('tracks-wrap');
+  if (!loader || !arc) return;
 
-  const total   = Object.keys(trackStates).length;
-  if (total === 0) { el.style.display = 'none'; return; }
+  const keys    = Object.keys(trackStates);
+  const total   = keys.length;
+  if (total === 0) return;
 
-  const fetched  = Object.values(trackStates).filter(s => s === 'ready').length;
-  const busy     = Object.values(trackStates).filter(s => ['loading','pending','decoding'].includes(s)).length;
-  const errors   = Object.values(trackStates).filter(s => s === 'error').length;
-  const allDecoded = Object.keys(trackStates).length > 0 &&
-    Object.keys(trackStates).every(k => trackStates[k] === 'ready' && !!decodedBuffers[k]);
+  const ready   = keys.filter(k => trackStates[k] === 'ready').length;
+  const errors  = keys.filter(k => trackStates[k] === 'error').length;
+  const loading = keys.find(k => trackStates[k] === 'loading' || trackStates[k] === 'decoding' || trackStates[k] === 'pending');
+  const allDone = ready + errors === total;
 
-  if (allDecoded) {
-    el.innerHTML = `<span class="ls-check">✓</span> PRONTO — ${total} TRACKS`;
-    el.className = 'loading-status loading-status--ready';
-    el.style.display = 'flex';
-    setTimeout(() => { if (el) el.style.display = 'none'; }, 2000);
-  } else if (errors > 0 && busy === 0) {
-    el.textContent = `⚠ ${errors} TRACK(S) COM ERRO`;
-    el.className = 'loading-status loading-status--error';
-    el.style.display = 'flex';
+  // Progresso do arco SVG (circunferência = 2π×50 ≈ 314)
+  const circ = 2 * Math.PI * 50;
+  const pct  = allDone ? 1 : (ready / total);
+  arc.style.strokeDasharray  = circ;
+  arc.style.strokeDashoffset = circ * (1 - pct);
+  arc.style.stroke = allDone && errors === 0 ? 'var(--glow2)' : errors > 0 && allDone ? '#ff6b6b' : '#38bdf8';
+
+  if (allDone) {
+    if (errors > 0) {
+      labelEl.textContent = errors + ' ERRO(S)';
+      trackEl.textContent = 'Algumas tracks falharam';
+    } else {
+      labelEl.textContent = 'PRONTO';
+      trackEl.textContent = total + ' TRACKS';
+    }
+    // Esconder loader e mostrar controles após 1.2s
+    setTimeout(() => {
+      loader.classList.add('circ-loader--done');
+      if (seekPanel)  seekPanel.style.display  = '';
+      if (tracksWrap) tracksWrap.style.display = '';
+    }, 1200);
   } else {
-    el.innerHTML = `<span class="ls-spin"></span> BAIXANDO ${fetched}/${total}…`;
-    el.className = 'loading-status loading-status--busy';
-    el.style.display = 'flex';
+    const currentKey = loading || keys[0];
+    const nome = currentKey ? currentKey.replace(/_/g, ' ').toUpperCase() : '—';
+    labelEl.textContent = 'CARREGANDO';
+    trackEl.textContent = ready + ' DE ' + total + ' — ' + nome;
   }
+}
+
+// ─── Banner de status (legado — circular loader é o principal) ──
+function updateLoadingBanner() {
+  // O loader circular em updateCircLoader() gerencia o visual principal.
+  // Este banner é mantido apenas para compatibilidade com _playAsync.
+  const el = document.getElementById('loading-status');
+  if (el) el.style.display = 'none';
 }
 
 // ─── Iniciar sources ──────────────────────────────────────
@@ -268,12 +294,6 @@ async function _playAsync(ac) {
 
   // Decodificar tracks que ainda não foram decodificadas
   if (Object.keys(decodedBuffers).length < Object.keys(rawBuffers).length) {
-    const el = document.getElementById('loading-status');
-    if (el) {
-      el.innerHTML = '<span class="ls-spin"></span> DECODIFICANDO ÁUDIO…';
-      el.className = 'loading-status loading-status--busy';
-      el.style.display = 'flex';
-    }
     await decodeAllPending(ac);
   }
 
