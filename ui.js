@@ -147,14 +147,32 @@ function renderMixerConsole() {
 
       <div class="mx-header">
         <button class="back" onclick="voltarMixer()"><i class='bx bx-arrow-back'></i></button>
-        <div>
+        <div style="flex:1;min-width:0">
           <div class="mx-title">${m.titulo}</div>
-          <div class="mx-meta">Tom: ${m.tom} · ${m.bpm} BPM · ${tks.length} canais</div>
+          <div class="mx-meta">${m.bpm} BPM · ${tks.length} canais</div>
+        </div>
+        <!-- Transposição -->
+        <div class="transpose-ctrl">
+          <button class="tp-btn" onclick="transpor(-1)" title="1 semitom abaixo">−1</button>
+          <div class="tp-display">
+            <div class="tp-label">TOM</div>
+            <div class="tp-tom" id="tp-tom">${m.tom}</div>
+          </div>
+          <button class="tp-btn" onclick="transpor(+1)" title="1 semitom acima">+1</button>
         </div>
       </div>
 
-      <!-- Banner de carregamento — gerenciado por audio.js -->
-      <div id="loading-status" class="loading-status loading-status--busy" style="display:none"></div>
+      <!-- Loading circular — gerenciado por audio.js -->
+      <div id="circ-loader" class="circ-loader">
+        <svg class="circ-svg" viewBox="0 0 120 120">
+          <circle class="circ-bg"   cx="60" cy="60" r="50"/>
+          <circle class="circ-fill" cx="60" cy="60" r="50" id="circ-arc"/>
+        </svg>
+        <div class="circ-inner">
+          <div class="circ-label" id="circ-label">CARREGANDO</div>
+          <div class="circ-track" id="circ-track">—</div>
+        </div>
+      </div>
 
       <!-- Banner de desbloqueio de áudio no mobile -->
       <div id="audio-unlock-banner" class="audio-unlock-banner" style="display:none">
@@ -162,7 +180,7 @@ function renderMixerConsole() {
         <span>Toque em <strong>PLAY</strong> para ativar o áudio</span>
       </div>
 
-      <div class="seek-panel">
+      <div class="seek-panel" id="seek-panel" style="display:none">
         <div class="time-row">
           <span id="curr-time">0:00</span>
           <span id="total-time">–:––</span>
@@ -178,13 +196,12 @@ function renderMixerConsole() {
         </div>
       </div>
 
-      <!-- Tracks — cada linha tem id="trow-KEY" para atualização individual -->
-      <div class="tracks-wrap">
+      <!-- Tracks -->
+      <div class="tracks-wrap" id="tracks-wrap" style="display:none">
         ${tks.map(tk => `
           <div class="t-row" id="trow-${tk}">
             <div class="t-icon"><i class='bx ${trackIcons[tk] || 'bx-music'}'></i></div>
             <div class="t-name">${tk.replace(/_/g, ' ')}</div>
-            <!-- dot de status: pending | loading | ready | error -->
             <span class="t-dot t-dot--pending" title="Aguardando…"></span>
             <input type="range" id="vol-${tk}" class="t-vol" min="0" max="1" step="0.05" value="0.8"
               oninput="setVol('${tk}', this.value)" disabled>
@@ -202,6 +219,35 @@ function renderMixerConsole() {
   const isMobile = window.matchMedia('(max-width: 768px)').matches;
   const unlockBanner = document.getElementById('audio-unlock-banner');
   if (unlockBanner && isMobile) unlockBanner.style.display = 'flex';
+}
+
+// ─── Transposição ─────────────────────────────────────────
+const NOTAS = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const NOTAS_PT = {
+  'C':'C','C#':'C#','Db':'C#','D':'D','D#':'D#','Eb':'D#',
+  'E':'E','F':'F','F#':'F#','Gb':'F#','G':'G','G#':'G#',
+  'Ab':'G#','A':'A','A#':'A#','Bb':'A#','B':'B'
+};
+let transpOffset = 0;
+
+function tomBase() {
+  return musicaAtiva ? (NOTAS_PT[musicaAtiva.tom] || musicaAtiva.tom) : 'C';
+}
+
+function transpor(delta) {
+  transpOffset += delta;
+  const baseIdx = NOTAS.indexOf(tomBase());
+  if (baseIdx === -1) return;
+  const newIdx = ((baseIdx + transpOffset) % 12 + 12) % 12;
+  const newTom = NOTAS[newIdx];
+  const el = document.getElementById('tp-tom');
+  if (el) {
+    el.textContent = newTom;
+    el.classList.remove('tp-flash');
+    void el.offsetWidth; // reflow para reiniciar animação
+    el.classList.add('tp-flash');
+  }
+  showToast(delta > 0 ? `+1 semitom → ${newTom}` : `-1 semitom → ${newTom}`);
 }
 
 // ─── MIXER — Voltar ───────────────────────────────────────
